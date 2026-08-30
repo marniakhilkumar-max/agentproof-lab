@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentproof-lab"
+version = "0.1.0"
+description = "Reproducible policy and trajectory evaluation for tool-using agents"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.7,<3", "httpx>=0.28,<1"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+agentproof = "agentproof.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
