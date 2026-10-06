@@ -48,6 +48,32 @@ follow redirects. Each call has a 60-second timeout and each case has at most
 four decisions by default. Tools are simulations: no payments, secret access,
 shell commands, or external service writes occur.
 
+## Catch regressions before release
+
+Save a baseline and compare it with a candidate run over the same dataset:
+
+```bash
+agentproof --mode replay --output reports/baseline.json --check
+agentproof --mode replay --output reports/candidate.json --check
+agentproof-compare reports/baseline.json reports/candidate.json --output reports/comparison.json
+```
+
+The comparison exits **0** when no previously passing check fails, **1** on a
+regression, and **2** for invalid or incompatible inputs. It detects a newly failing
+check even within an already failing case, so an unchanged aggregate pass rate
+cannot hide a policy regression. Improvements do not cancel regressions elsewhere.
+Suite hashes, versions, modes, case IDs, and check names must match. Model changes
+are allowed and explicitly labeled; model digests and sampling settings must be
+controlled separately for reproducible live experiments.
+
+A passing comparison means no observed regression; it does not mean all cases
+passed. Keep the absolute `agentproof --check` release gate as well. Replay and
+live-model reports cannot be compared. These deterministic checks do not provide
+statistical significance or semantic answer grading.
+
+See [the delivery walkthrough](docs/delivery-walkthrough.md) for scope, acceptance
+criteria, failure analysis, and a practical client handoff.
+
 ## Architecture
 
 Versioned case -> adapter decision -> schema validation -> simulated tool event
@@ -68,7 +94,7 @@ The release gate exited nonzero, as intended. See the
 [complete sanitized trace report](examples/llama32-first-run.json).
 This single small-sample run is a debugging artifact, not a model ranking.
 Model digest: `a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72`.
-The offline test suite passes **18 tests**; those are not 18 live-model trials.
+The offline test suite passes **29 tests**; those are not 18 live-model trials.
 
 ## Limits and interpretation
 

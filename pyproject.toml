@@ -14,6 +14,7 @@ dev = ["pytest>=8,<10"]
 
 [project.scripts]
 agentproof = "agentproof.cli:main"
+agentproof-compare = "agentproof.compare:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
